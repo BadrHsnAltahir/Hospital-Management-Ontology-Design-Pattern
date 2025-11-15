@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/healthcare-ontology#"
+     xml:base="http://www.semanticweb.org/healthcare-ontology"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#">
+
+    <owl:Ontology rdf:about="http://www.semanticweb.org/healthcare-ontology">
+        <rdfs:comment>Healthcare Ontology for Doctors and Patients (HODP) - نظام الأنطولوجيا الشامل لإدارة الرعاية الصحية</rdfs:comment>
+        <rdfs:label>HODP - Healthcare Ontology</rdfs:label>
+        <owl:versionInfo>2.0</owl:versionInfo>
+        <rdfs:comment>يتضمن جميع الأفراد من الأطباء، المرضى، المواعيد، والعلاجات</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- الفئات الأساسية -->
+    <owl:Class rdf:about="#Person"/>
+    
+    <owl:Class rdf:about="#Patient">
+        <rdfs:subClassOf rdf:resource="#Person"/>
+        <rdfs:label>مريض</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#Doctor">
+        <rdfs:subClassOf rdf:resource="#Person"/>
+        <rdfs:label>طبيب</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#MedicalEvent"/>
+    
+    <owl:Class rdf:about="#Appointment">
+        <rdfs:subClassOf rdf:resource="#MedicalEvent"/>
+        <rdfs:label>موعد</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#Treatment">
+        <rdfs:subClassOf rdf:resource="#MedicalEvent"/>
+        <rdfs:label>علاج</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#FinancialDocument"/>
+    
+    <owl:Class rdf:about="#Bill">
+        <rdfs:subClassOf rdf:resource="#FinancialDocument"/>
+        <rdfs:label>فاتورة</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#Organization"/>
+    
+    <owl:Class rdf:about="#InsuranceProvider">
+        <rdfs:subClassOf rdf:resource="#Organization"/>
+        <rdfs:label>مزود تأمين</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#HospitalBranch">
+        <rdfs:subClassOf rdf:resource="#Organization"/>
+        <rdfs:label>فرع مستشفى</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#MedicalSpecialization">
+        <rdfs:label>تخصص طبي</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#PaymentMethod">
+        <rdfs:label>طريقة دفع</rdfs:label>
+    </owl:Class>
+
+    <!-- فئات فرعية للمواعيد -->
+    <owl:Class rdf:about="#ScheduledAppointment">
+        <rdfs:subClassOf rdf:resource="#Appointment"/>
+        <rdfs:label>موعد مجدول</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#CompletedAppointment">
+        <rdfs:subClassOf rdf:resource="#Appointment"/>
+        <rdfs:label>موعد مكتمل</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#CancelledAppointment">
+        <rdfs:subClassOf rdf:resource="#Appointment"/>
+        <rdfs:label>موعد ملغى</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#NoShowAppointment">
+        <rdfs:subClassOf rdf:resource="#Appointment"/>
+        <rdfs:label>موعد غير محضر</rdfs:label>
+    </owl:Class>
+
+    <!-- فئات للاستدلال -->
+    <owl:Class rdf:about="#SeniorDoctor">
+        <rdfs:subClassOf rdf:resource="#Doctor"/>
+        <rdfs:label>طبيب مخضرم</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#ElderlyPatient">
+        <rdfs:subClassOf rdf:resource="#Patient"/>
+        <rdfs:label>مريض مسن</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#HighCostTreatment">
+        <rdfs:subClassOf rdf:resource="#Treatment"/>
+        <rdfs:label>علاج عالي التكلفة</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="#DelinquentAccount">
+        <rdfs:subClassOf rdf:resource="#Bill"/>
+        <rdfs:label>حساب متأخر</rdfs:label>
+    </owl:Class>
+
+    <!-- خصائص الكائنات -->
+    <owl:ObjectProperty rdf:about="#hasAppointment">
+        <rdfs:domain rdf:resource="#Patient"/>
+        <rdfs:range rdf:resource="#Appointment"/>
+        <rdfs:label>لديه موعد</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#isAppointmentOf">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="#Patient"/>
+        <owl:inverseOf rdf:resource="#hasAppointment"/>
+        <rdfs:label>موعد خاص بـ</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#supervisedBy">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="#Doctor"/>
+        <rdfs:label>مشرف عليه من قبل</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#supervises">
+        <rdfs:domain rdf:resource="#Doctor"/>
+        <rdfs:range rdf:resource="#Appointment"/>
+        <owl:inverseOf rdf:resource="#supervisedBy"/>
+        <rdfs:label>يشرف على</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#resultsIn">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="#Treatment"/>
+        <rdfs:label>يؤدي إلى</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#isResultOf">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="#Appointment"/>
+        <owl:inverseOf rdf:resource="#resultsIn"/>
+        <rdfs:label>نتيجة لـ</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#generates">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="#Bill"/>
+        <rdfs:label>يولد</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#isGeneratedBy">
+        <rdfs:domain rdf:resource="#Bill"/>
+        <rdfs:range rdf:resource="#Treatment"/>
+        <owl:inverseOf rdf:resource="#generates"/>
+        <rdfs:label>مولد بواسطة</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#hasInsurance">
+        <rdfs:domain rdf:resource="#Patient"/>
+        <rdfs:range rdf:resource="#InsuranceProvider"/>
+        <rdfs:label>لديه تأمين</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#worksAt">
+        <rdfs:domain rdf:resource="#Doctor"/>
+        <rdfs:range rdf:resource="#HospitalBranch"/>
+        <rdfs:label>يعمل في</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#hasSpecialization">
+        <rdfs:domain rdf:resource="#Doctor"/>
+        <rdfs:range rdf:resource="#MedicalSpecialization"/>
+        <rdfs:label>متخصص في</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="#paidBy">
+        <rdfs:domain rdf:resource="#Bill"/>
+        <rdfs:range rdf:resource="#PaymentMethod"/>
+        <rdfs:label>مدفوع بواسطة</rdfs:label>
+    </owl:ObjectProperty>
+
+    <!-- خصائص البيانات -->
+    <owl:DatatypeProperty rdf:about="#firstName">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>الاسم الأول</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#lastName">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>الاسم الأخير</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#gender">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>الجنس</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#dateOfBirth">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>تاريخ الميلاد</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#contactNumber">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>رقم الاتصال</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#address">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>العنوان</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#registrationDate">
+        <rdfs:domain rdf:resource="#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>تاريخ التسجيل</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#insuranceNumber">
+        <rdfs:domain rdf:resource="#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>رقم التأمين</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#email">
+        <rdfs:domain rdf:resource="#Person"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>البريد الإلكتروني</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#phoneNumber">
+        <rdfs:domain rdf:resource="#Doctor"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>رقم الهاتف</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#yearsExperience">
+        <rdfs:domain rdf:resource="#Doctor"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label>سنوات الخبرة</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#appointmentDate">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>تاريخ الموعد</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#appointmentTime">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#time"/>
+        <rdfs:label>وقت الموعد</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#reasonForVisit">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>سبب الزيارة</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#status">
+        <rdfs:domain rdf:resource="#Appointment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>الحالة</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#treatmentType">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>نوع العلاج</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#description">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>الوصف</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#cost">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>التكلفة</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="#treatmentDate">
+        <rdfs:domain rdf:resource="#Treatment"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+        <rdfs:label>تاريخ العلاج</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <!-- الكيانات التنظيمية -->
+    <HospitalBranch rdf:about="#WestsideClinic">
+        <rdfs:label>Westside Clinic</rdfs:label>
+    </HospitalBranch>
+
+    <HospitalBranch rdf:about="#EastsideClinic">
+        <rdfs:label>Eastside Clinic</rdfs:label>
+    </HospitalBranch>
+
+    <HospitalBranch rdf:about="#CentralHospital">
+        <rdfs:label>Central Hospital</rdfs:label>
+    </HospitalBranch>
+
+    <InsuranceProvider rdf:about="#WellnessCorp">
+        <rdfs:label>WellnessCorp</rdfs:label>
+    </InsuranceProvider>
+
+    <InsuranceProvider rdf:about="#PulseSecure">
+        <rdfs:label>PulseSecure</rdfs:label>
+    </InsuranceProvider>
+
+    <InsuranceProvider rdf:about="#HealthIndia">
+        <rdfs:label>HealthIndia</rdfs:label>
+    </InsuranceProvider>
+
+    <InsuranceProvider rdf:about="#MedCarePlus">
+        <rdfs:label>MedCare Plus</rdfs:label>
+    </InsuranceProvider>
+
+    <MedicalSpecialization rdf:about="#Dermatology">
+        <rdfs:label>طب الجلدية</rdfs:label>
+    </MedicalSpecialization>
+
+    <MedicalSpecialization rdf:about="#Pediatrics">
+        <rdfs:label>طب الأطفال</rdfs:label>
+    </MedicalSpecialization>
+
+    <MedicalSpecialization rdf:about="#Oncology">
+        <rdfs:label>علم الأورام</rdfs:label>
+    </MedicalSpecialization>
+
+    <PaymentMethod rdf:about="#Cash">
+        <rdfs:label>نقدي</rdfs:label>
+    </PaymentMethod>
+
+    <PaymentMethod rdf:about="#CreditCard">
+        <rdfs:label>بطاقة ائتمان</rdfs:label>
+    </PaymentMethod>
+
+    <PaymentMethod rdf:about="#Insurance">
+        <rdfs:label>تأمين</rdfs:label>
+    </PaymentMethod>
+
+    <!-- الأطباء -->
+    <Doctor rdf:about="#D001">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">David</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Taylor</lastName>
+        <hasSpecialization rdf:resource="#Dermatology"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8322010158</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">17</yearsExperience>
+        <worksAt rdf:resource="#WestsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.david.taylor@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D002">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Jane</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Davis</lastName>
+        <hasSpecialization rdf:resource="#Pediatrics"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">9004382050</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</yearsExperience>
+        <worksAt rdf:resource="#EastsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.jane.davis@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D003">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Jane</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Smith</lastName>
+        <hasSpecialization rdf:resource="#Pediatrics"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8737740598</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">19</yearsExperience>
+        <worksAt rdf:resource="#EastsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.jane.smith@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D004">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">David</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Jones</lastName>
+        <hasSpecialization rdf:resource="#Pediatrics"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6594221991</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">28</yearsExperience>
+        <worksAt rdf:resource="#CentralHospital"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.david.jones@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D005">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sarah</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Taylor</lastName>
+        <hasSpecialization rdf:resource="#Dermatology"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">9118538547</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</yearsExperience>
+        <worksAt rdf:resource="#CentralHospital"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.sarah.taylor@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D006">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alex</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Davis</lastName>
+        <hasSpecialization rdf:resource="#Pediatrics"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6570137231</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">23</yearsExperience>
+        <worksAt rdf:resource="#CentralHospital"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.alex.davis@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D007">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Robert</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Davis</lastName>
+        <hasSpecialization rdf:resource="#Oncology"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8217493115</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</yearsExperience>
+        <worksAt rdf:resource="#WestsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.robert.davis@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D008">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Linda</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Brown</lastName>
+        <hasSpecialization rdf:resource="#Dermatology"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">9069162601</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</yearsExperience>
+        <worksAt rdf:resource="#WestsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.linda.brown@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D009">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sarah</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Smith</lastName>
+        <hasSpecialization rdf:resource="#Pediatrics"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7387087517</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">26</yearsExperience>
+        <worksAt rdf:resource="#CentralHospital"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.sarah.smith@hospital.com</email>
+    </Doctor>
+
+    <Doctor rdf:about="#D010">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Linda</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Wilson</lastName>
+        <hasSpecialization rdf:resource="#Oncology"/>
+        <phoneNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6176383634</phoneNumber>
+        <yearsExperience rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">21</yearsExperience>
+        <worksAt rdf:resource="#EastsideClinic"/>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dr.linda.wilson@hospital.com</email>
+    </Doctor>
+
+    <!-- المرضى -->
+    <Patient rdf:about="#P001">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">David</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Williams</lastName>
+        <gender rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F</gender>
+        <dateOfBirth rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1955-06-04</dateOfBirth>
+        <contactNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">6939585183</contactNumber>
+        <address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">789 Pine Rd</address>
+        <registrationDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-06-23</registrationDate>
+        <hasInsurance rdf:resource="#WellnessCorp"/>
+        <insuranceNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">INS840674</insuranceNumber>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">david.williams@mail.com</email>
+    </Patient>
+
+    <Patient rdf:about="#P002">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Emily</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Smith</lastName>
+        <gender rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F</gender>
+        <dateOfBirth rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1984-10-12</dateOfBirth>
+        <contactNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8228188767</contactNumber>
+        <address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">321 Maple Dr</address>
+        <registrationDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-01-15</registrationDate>
+        <hasInsurance rdf:resource="#PulseSecure"/>
+        <insuranceNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">INS354079</insuranceNumber>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">emily.smith@mail.com</email>
+    </Patient>
+
+    <Patient rdf:about="#P003">
+        <firstName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Laura</firstName>
+        <lastName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Jones</lastName>
+        <gender rdf:datatype="http://www.w3.org/2001/XMLSchema#string">M</gender>
+        <dateOfBirth rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1977-08-21</dateOfBirth>
+        <contactNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">8397029847</contactNumber>
+        <address rdf:datatype="http://www.w3.org/2001/XMLSchema#string">321 Maple Dr</address>
+        <registrationDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-02-07</registrationDate>
+        <hasInsurance rdf:resource="#PulseSecure"/>
+        <insuranceNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#string">INS650929</insuranceNumber>
+        <email rdf:datatype="http://www.w3.org/2001/XMLSchema#string">laura.jones@mail.com</email>
+    </Patient>
+
+    <!-- المواعيد -->
+    <ScheduledAppointment rdf:about="#A001">
+        <isAppointmentOf rdf:resource="#P034"/>
+        <supervisedBy rdf:resource="#D009"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-08-09</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">15:15:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Therapy</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Scheduled</status>
+    </ScheduledAppointment>
+
+    <NoShowAppointment rdf:about="#A002">
+        <isAppointmentOf rdf:resource="#P032"/>
+        <supervisedBy rdf:resource="#D004"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-09</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">14:30:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Therapy</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">No-show</status>
+    </NoShowAppointment>
+
+    <CancelledAppointment rdf:about="#A003">
+        <isAppointmentOf rdf:resource="#P048"/>
+        <supervisedBy rdf:resource="#D004"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-28</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">08:00:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Consultation</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cancelled</status>
+    </CancelledAppointment>
+
+    <CancelledAppointment rdf:about="#A004">
+        <isAppointmentOf rdf:resource="#P025"/>
+        <supervisedBy rdf:resource="#D006"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-09-01</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">09:15:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Consultation</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cancelled</status>
+    </CancelledAppointment>
+
+    <NoShowAppointment rdf:about="#A005">
+        <isAppointmentOf rdf:resource="#P040"/>
+        <supervisedBy rdf:resource="#D003"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-07-06</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">12:45:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Emergency</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">No-show</status>
+    </NoShowAppointment>
+
+    <ScheduledAppointment rdf:about="#A006">
+        <isAppointmentOf rdf:resource="#P045"/>
+        <supervisedBy rdf:resource="#D006"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-19</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">16:15:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Checkup</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Scheduled</status>
+    </ScheduledAppointment>
+
+    <ScheduledAppointment rdf:about="#A007">
+        <isAppointmentOf rdf:resource="#P001"/>
+        <supervisedBy rdf:resource="#D007"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-04-09</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">10:30:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Consultation</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Scheduled</status>
+    </ScheduledAppointment>
+
+    <CancelledAppointment rdf:about="#A008">
+        <isAppointmentOf rdf:resource="#P016"/>
+        <supervisedBy rdf:resource="#D010"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-05-24</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">08:45:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Consultation</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cancelled</status>
+    </CancelledAppointment>
+
+    <ScheduledAppointment rdf:about="#A009">
+        <isAppointmentOf rdf:resource="#P039"/>
+        <supervisedBy rdf:resource="#D010"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-03-05</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">13:45:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Follow-up</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Scheduled</status>
+    </ScheduledAppointment>
+
+    <CompletedAppointment rdf:about="#A010">
+        <isAppointmentOf rdf:resource="#P005"/>
+        <supervisedBy rdf:resource="#D003"/>
+        <appointmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-01-13</appointmentDate>
+        <appointmentTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">15:30:00</appointmentTime>
+        <reasonForVisit rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Therapy</reasonForVisit>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Completed</status>
+    </CompletedAppointment>
+
+    <!-- العلاجات -->
+    <Treatment rdf:about="#T001">
+        <isResultOf rdf:resource="#A001"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basic screening</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3941.97</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-08-09</treatmentDate>
+    </Treatment>
+
+    <Treatment rdf:about="#T002">
+        <isResultOf rdf:resource="#A002"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MRI</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Advanced protocol</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4158.44</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-09</treatmentDate>
+    </Treatment>
+
+    <Treatment rdf:about="#T003">
+        <isResultOf rdf:resource="#A003"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MRI</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Standard procedure</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3731.55</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-28</treatmentDate>
+    </Treatment>
+
+    <HighCostTreatment rdf:about="#T004">
+        <isResultOf rdf:resource="#A004"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MRI</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basic screening</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4799.86</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-09-01</treatmentDate>
+    </HighCostTreatment>
+
+    <Treatment rdf:about="#T005">
+        <isResultOf rdf:resource="#A005"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ECG</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Standard procedure</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">582.05</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-07-06</treatmentDate>
+    </Treatment>
+
+    <HighCostTreatment rdf:about="#T006">
+        <isResultOf rdf:resource="#A006"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Standard procedure</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1381.0</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-06-19</treatmentDate>
+    </HighCostTreatment>
+
+    <Treatment rdf:about="#T007">
+        <isResultOf rdf:resource="#A007"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Advanced protocol</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">534.03</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-04-09</treatmentDate>
+    </Treatment>
+
+    <Treatment rdf:about="#T008">
+        <isResultOf rdf:resource="#A008"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Physiotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Basic screening</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3413.64</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-05-24</treatmentDate>
+    </Treatment>
+
+    <Treatment rdf:about="#T009">
+        <isResultOf rdf:resource="#A009"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Physiotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Standard procedure</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4541.14</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-03-05</treatmentDate>
+    </Treatment>
+
+    <Treatment rdf:about="#T010">
+        <isResultOf rdf:resource="#A010"/>
+        <treatmentType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Physiotherapy</treatmentType>
+        <description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Standard procedure</description>
+        <cost rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1595.67</cost>
+        <treatmentDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-01-13</treatmentDate>
+    </Treatment>
+
+    <!-- قواعد SWRL -->
+    <swrl:Imp rdf:about="#SeniorDoctorRule">
+        <swrl:head>
+            <swrl:AtomList>
+                <rdf:first>
+                    <swrl:ClassAtom>
+                        <swrl:classPredicate rdf:resource="#SeniorDoctor"/>
+                        <swrl:argument1 rdf:resource="#d"/>
+                    </swrl:ClassAtom>
+                </rdf:first>
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </swrl:AtomList>
+        </swrl:head>
+        <swrl:body>
+            <swrl:AtomList>
+                <rdf:first>
+                    <swrl:ClassAtom>
+                        <swrl:classPredicate rdf:resource="#Doctor"/>
+                        <swrl:argument1 rdf:resource="#d"/>
+                    </swrl:ClassAtom>
+                </rdf:first>
+                <rdf:rest>
+                    <swrl:AtomList>
+                        <rdf:first>
+                            <swrl:DatavaluedPropertyAtom>
+                                <swrl:propertyPredicate rdf:resource="#yearsExperience"/>
+                                <swrl:argument1 rdf:resource="#d"/>
+                                <swrl:argument2 rdf:resource="#exp"/>
+                            </swrl:DatavaluedPropertyAtom>
+                        </rdf:first>
+                        <rdf:rest>
+                            <swrl:AtomList>
+                                <rdf:first>
+                                    <swrl:BuiltinAtom>
+                                        <swrl:builtin rdf:resource="http://www.w3.org/2003/11/swrlb#greaterThan"/>
+                                        <swrl:arguments>
+                                            <rdf:List>
+                                                <rdf:first rdf:resource="#exp"/>
+                                                <rdf:rest>
+                                                    <rdf:List>
+                                                        <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</rdf:first>
+                                                        <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                                                    </rdf:List>
+                                                </rdf:rest>
+                                            </rdf:List>
+                                        </swrl:arguments>
+                                    </swrl:BuiltinAtom>
+                                </rdf:first>
+                                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                            </swrl:AtomList>
+                        </rdf:rest>
+                    </swrl:AtomList>
+                </rdf:rest>
+            </swrl:AtomList>
+        </swrl:body>
+    </swrl:Imp>
+
+    <!-- قيود على العلاقات -->
+    <owl:Class rdf:about="#AppointmentConstraint">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#isAppointmentOf"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
+
+    <owl:Class rdf:about="#TreatmentConstraint">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#isResultOf"/>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</owl:cardinality>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
+
+</rdf:RDF>
