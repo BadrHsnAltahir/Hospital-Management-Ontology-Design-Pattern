@@ -6,7 +6,7 @@ import datetime
 # الخطوة 1: تحميل الأنطولوجيا من الملف
 # Step 1: Load the ontology from the file
 g = Graph()
-g.parse("Ontology/HospitalManagementOntologyDesignPattern.xml", format="xml")
+g.parse("HospitalManagementOntologyDesignPattern.xml", format="xml") # Here but ontology file directory
 
 print("✅ تم تحميل الأنطولوجيا بنجاح | Ontology loaded successfully")
 print(f"📊 عدد البيانات الثلاثية: {len(g)} | Number of triples: {len(g)}\n")
