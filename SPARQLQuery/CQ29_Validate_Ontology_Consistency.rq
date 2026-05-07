@@ -1,0 +1,7 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+ASK {
+  FILTER NOT EXISTS {
+    ?x owl:Nothing ?y .
+  }
+}

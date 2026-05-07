@@ -1,0 +1,10 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?patient ?doctor ?date (COUNT(?appointment) AS ?count)
+WHERE {
+  ?appointment :hasPatient ?patient .
+  ?appointment :scheduledWith ?doctor .
+  ?appointment :appointmentDate ?date .
+}
+GROUP BY ?patient ?doctor ?date
+HAVING (COUNT(?appointment) > 1)

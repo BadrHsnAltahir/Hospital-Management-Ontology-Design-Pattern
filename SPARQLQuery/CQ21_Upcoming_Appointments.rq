@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?appointment ?date
+WHERE {
+  ?appointment :appointmentDate ?date .
+  FILTER (?date > NOW())
+}

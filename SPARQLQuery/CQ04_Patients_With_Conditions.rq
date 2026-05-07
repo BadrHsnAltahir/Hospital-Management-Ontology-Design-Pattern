@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?patient ?condition
+WHERE {
+  ?patient :hasCondition ?condition .
+}

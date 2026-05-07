@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?patient ?treatment ?bill
+WHERE {
+  ?patient :hasTreatment ?treatment .
+  ?bill :billGeneratedFor ?patient .
+}

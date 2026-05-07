@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?appointment ?status
+WHERE {
+  ?appointment :appointmentStatus ?status .
+}

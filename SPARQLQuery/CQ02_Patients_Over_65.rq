@@ -1,0 +1,9 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?patient ?age
+WHERE {
+  ?patient rdf:type :Patient .
+  ?patient :age ?age .
+  FILTER (?age > 65)
+}

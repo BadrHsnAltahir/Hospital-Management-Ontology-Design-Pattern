@@ -1,0 +1,8 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?type (COUNT(?treatment) AS ?frequency)
+WHERE {
+  ?treatment :treatmentType ?type .
+}
+GROUP BY ?type
+ORDER BY DESC(?frequency)

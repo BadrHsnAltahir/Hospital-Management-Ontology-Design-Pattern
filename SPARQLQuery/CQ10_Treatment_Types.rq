@@ -1,0 +1,6 @@
+PREFIX : <http://example.org/hmo#>
+
+SELECT ?treatment ?type
+WHERE {
+  ?treatment :treatmentType ?type .
+}
